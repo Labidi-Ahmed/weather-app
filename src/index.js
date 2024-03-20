@@ -6,6 +6,7 @@ import './output.css';
 
 async function fetchWeatherData(city) {
 	const apiKey = '847ef6e59b914c9694f145907241703';
+
 	try {
 		const response = await fetch(
 			`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`,
@@ -15,6 +16,7 @@ async function fetchWeatherData(city) {
 		);
 
 		const data = await response.json();
+		hideLoading();
 		if (response.ok) {
 			console.log(data);
 			return data;
@@ -24,12 +26,19 @@ async function fetchWeatherData(city) {
 	}
 }
 
+const loadingElement = document.getElementById('loading');
 const form = document.querySelector('form');
 const card = document.querySelector('#card');
-const gif = document.querySelector('#gif');
+
+function showLoading() {
+	loadingElement.classList.remove('hidden');
+}
+
+function hideLoading() {
+	loadingElement.classList.add('hidden');
+}
 
 async function DiplayGIf(searchKeyWord) {
-	gif.src = '';
 	const apiKEy = '90tSbZhL9tkytFOrIoHfIEyfEvIOZwnx';
 	try {
 		const response = await fetch(
@@ -53,6 +62,8 @@ async function DiplayGIf(searchKeyWord) {
 }
 
 async function processWeatherData(location) {
+	showLoading();
+
 	const data = await fetchWeatherData(location);
 	if (data) {
 		const city = data.location.name;
@@ -73,7 +84,8 @@ async function processWeatherData(location) {
 		DiplayGIf(data.current.condition.text);
 	} else {
 		card.innerHTML = errorCard(location);
-		gif.src = '';
+
+		hideLoading();
 	}
 }
 
